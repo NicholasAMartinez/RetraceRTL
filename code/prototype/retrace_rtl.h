@@ -31,9 +31,9 @@
  *
  ****************************************************************************/
 /**
- * @file rtl_direct.cpp
+ * @file retrace_rtl.h
  *
- * Helper class to access RTL
+ * Retrace flight path
  *
  * @author Nicholas Martinez <nicholasammartinez@gmail.com>
  */

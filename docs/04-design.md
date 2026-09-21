@@ -1,27 +1,27 @@
 # Design
 
-BackTrackRTL is implemented as a PX4 Navigator mode that records the vehicle's flown path while another navigation mode is active and retraces that path in reverse when BackTrackRTL is activated.
+RetraceRTL is implemented as a PX4 Navigator mode that records the vehicle's flown path while another navigation mode is active and retraces that path in reverse when RetraceRTL is activated.
 
 The design prioritizes predictable behavior, bounded memory usage, and simple integration with the existing PX4 Navigator architecture.
 
 ## PX4 Integration
 
-`BackTrackRtl` inherits from both `NavigatorMode` and `ModuleParams`.
+`RetraceRtl` inherits from both `NavigatorMode` and `ModuleParams`.
 
 ```cpp
-class BackTrackRtl : public NavigatorMode, public ModuleParams
+class RetraceRtl : public NavigatorMode, public ModuleParams
 ```
 
-`NavigatorMode` provides the lifecycle interface used by PX4 Navigator. BackTrackRTL uses the standard mode callbacks:
+`NavigatorMode` provides the lifecycle interface used by PX4 Navigator. RetraceRTL uses the standard mode callbacks:
 
-* `on_inactive()` records the vehicle path while BackTrackRTL is not active.
+* `on_inactive()` records the vehicle path while RetraceRTL is not active.
 * `on_activation()` validates the stored path and initializes the return sequence.
 * `on_active()` commands the vehicle through the stored path in reverse order.
 * `on_inactivation()` clears temporary return-state information when the mode is exited.
 
 The mode receives a pointer to the parent `Navigator` object, allowing it to access navigation state and publish or update position setpoints through the existing Navigator infrastructure.
 
-`ModuleParams` provides access to PX4 parameters used by BackTrackRTL. Parameters can later expose values such as minimum point spacing, waypoint acceptance tolerance, or timeout limits without hard-coding those values into the flight logic.
+`ModuleParams` provides access to PX4 parameters used by RetraceRTL. Parameters can later expose values such as minimum point spacing, waypoint acceptance tolerance, or timeout limits without hard-coding those values into the flight logic.
 
 For the initial prototype, fixed constants may be used where runtime configuration is not yet necessary.
 
@@ -43,7 +43,7 @@ When the buffer becomes full, the oldest point is discarded and newer points con
 
 ## Path Recording
 
-Path recording occurs only while BackTrackRTL is inactive.
+Path recording occurs only while RetraceRTL is inactive.
 
 The first valid local position after arming becomes the first stored path point.
 
@@ -51,7 +51,7 @@ Additional points are added only when the vehicle has moved at least a configure
 
 This prevents unnecessary storage of nearly identical positions while still preserving the flown route.
 
-Path recording stops while BackTrackRTL itself is active.
+Path recording stops while RetraceRTL itself is active.
 
 If the local-position estimate becomes invalid, the stored path is marked invalid because the continuity of the recorded route can no longer be guaranteed.
 
@@ -69,7 +69,7 @@ No global route optimization or waypoint reordering is performed.
 
 ## Activation Checks
 
-BackTrackRTL may activate only when the recorded path is considered usable.
+RetraceRTL may activate only when the recorded path is considered usable.
 
 The initial checks should include:
 
@@ -79,11 +79,11 @@ The initial checks should include:
 * no known gap in position history;
 * vehicle reasonably close to the newest recorded point.
 
-If these checks fail, BackTrackRTL should reject activation or hand control to the configured fallback behavior.
+If these checks fail, RetraceRTL should reject activation or hand control to the configured fallback behavior.
 
-## Backtracking Algorithm
+## Retracing Algorithm
 
-When activated, BackTrackRTL begins with the newest stored path point and moves backward through the array.
+When activated, RetraceRTL begins with the newest stored path point and moves backward through the array.
 
 The vehicle is commanded toward one point at a time.
 
@@ -96,7 +96,7 @@ Recorded flight:
 
 P0 -> P1 -> P2 -> P3 -> P4
 
-BackTrackRTL:
+RetraceRTL:
 
 P4 -> P3 -> P2 -> P1 -> P0
 ```
@@ -107,7 +107,7 @@ This keeps the return behavior directly tied to the path that the vehicle previo
 
 ## Failure and Handoff Logic
 
-BackTrackRTL should stop attempting to retrace the route when continuing would no longer be considered safe or valid.
+RetraceRTL should stop attempting to retrace the route when continuing would no longer be considered safe or valid.
 
 Examples include:
 
@@ -116,6 +116,6 @@ Examples include:
 * failure to reach a target point within a timeout;
 * invalid or exhausted path data.
 
-When this occurs, BackTrackRTL should hand control to an existing PX4 failsafe or navigation behavior rather than attempting to recover independently.
+When this occurs, RetraceRTL should hand control to an existing PX4 failsafe or navigation behavior rather than attempting to recover independently.
 
-The initial BackTrackRTL implementation is responsible for retracing a previously flown route. It is not responsible for guaranteeing landing, obstacle avoidance, or recovery after localization failure.
+The initial RetraceRTL implementation is responsible for retracing a previously flown route. It is not responsible for guaranteeing landing, obstacle avoidance, or recovery after localization failure.

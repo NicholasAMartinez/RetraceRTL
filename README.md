@@ -1,6 +1,6 @@
-# BackTrackRTL
+# RetraceRTL
 
-BackTrackRTL is an experimental PX4 recovery strategy that records an aircraft's flown path and attempts to retrace it during recovery.
+RetraceRTL is an experimental PX4 recovery strategy that records an aircraft's flown path and attempts to retrace it during recovery.
 
 The goal is to reduce traversal through unknown space by reusing a path the aircraft has already successfully flown.
 
@@ -8,16 +8,16 @@ The goal is to reduce traversal through unknown space by reusing a path the airc
 
 Conventional RTL strategies may climb to a predefined altitude or fly directly toward home. In environments with trees, buildings, overhangs, or other obstacles, this can require entering previously untraversed space. For some applications this may be completely acceptable, but it is not always possible.
 
-BackTrackRTL instead attempts to follow the recorded flight path in reverse while maintaining a level of confidence in the return path. This project's goal is similar to ArduPilot's [SmartRTL](https://ardupilot.org/copter/docs/smartrtl-mode.html), but it will not inherently provide full Return to Launch/Land.
+RetraceRTL instead attempts to follow the recorded flight path in reverse while maintaining a level of confidence in the return path. This project's goal is similar to ArduPilot's [SmartRTL](https://ardupilot.org/copter/docs/smartrtl-mode.html), but it will not inherently provide full Return to Launch/Land.
 
 ## Concept
 
 1. Record the aircraft's trajectory during normal flight.
 2. Maintain a bounded and simplified breadcrumb history.
-3. Trigger BackTrackRTL during an applicable recovery event (e.g., loss of the command-and-control (C2) link or another configured failsafe condition).
+3. Trigger RetraceRTL during an applicable recovery event (e.g., loss of the command-and-control (C2) link or another configured failsafe condition).
 4. Follow the recorded path in reverse.
 5. Return control to the pilot if communication is restored.
-6. Fall back to another PX4 recovery strategy if reliable backtracking is no longer possible.
+6. Fall back to another PX4 recovery strategy if reliable retracing is no longer possible.
 
 ## Design Goals
 
@@ -30,7 +30,7 @@ BackTrackRTL instead attempts to follow the recorded flight path in reverse whil
 
 ## Limitations
 
-BackTrackRTL does not guarantee a safe return.
+RetraceRTL does not guarantee a safe return.
 
 Its effectiveness depends on factors including:
 
