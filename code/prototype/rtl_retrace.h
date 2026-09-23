@@ -31,9 +31,48 @@
  *
  ****************************************************************************/
 /**
- * @file retrace_rtl.h
+ * @file rtl_retrace.h
  *
  * Retrace flight path
  *
  * @author Nicholas Martinez <nicholasammartinez@gmail.com>
  */
+
+#pragma once
+
+#include "navigator_mode.h"
+
+class Navigator;
+
+class RtlRetrace : public NavigatorMode, public ModuleParams
+{
+public:
+	RtlRetrace(Navigator *navigator);
+
+	~RtlRetrace() = default;
+
+	void initialize() override {}
+
+	/**
+	 * This function is called while the mode is inactive
+	 */
+	void on_inactive() override;
+
+	/**
+	 * This function is called one time when mode becomes active, pos_sp_triplet must be initialized here
+	 */
+	void on_activation() override;
+
+	/**
+	 * This function is called one time when mode becomes inactive
+	 */
+	void on_inactivation() override;
+
+	/**
+	 * This function is called while the mode is active
+	 */
+	void on_active() override;
+
+private:
+    // Private members and functions...
+};

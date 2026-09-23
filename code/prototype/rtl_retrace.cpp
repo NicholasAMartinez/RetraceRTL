@@ -31,9 +31,35 @@
  *
  ****************************************************************************/
 /**
- * @file retrace_rtl.cpp
+ * @file rtl_retrace.cpp
  *
  * Retrace flight path
  *
  * @author Nicholas Martinez <nicholasammartinez@gmail.com>
  */
+
+#include "rtl_retrace.h"
+
+
+void on_inactive()
+{
+    // When the RTL is not active that means we are in normal flight
+    // We will need to record our position as we travel
+}
+
+void on_activation()
+{
+    // We are transfering from manual flight to RetraceRTL
+    // We need to stop movement, take control, and stop recording points
+}
+
+void on_inactivation()
+{
+    // We have reached the end of the available retrace route or we have
+    // returned back to 
+}
+
+void on_active()
+{
+    // When RTL is active we are retracing our flight path.
+}
