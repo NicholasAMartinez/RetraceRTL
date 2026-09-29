@@ -14,14 +14,6 @@ To build and launch the X500 Gazebo simulation:
 make px4_sitl gz_x500
 ```
 
-For hardware, build your board’s target, for example:
-
-```sh
-make px4_fmu-v6x_default
-```
-
-The firmware artifact is written to `build/<target>/<target>.px4`. Flash it using your normal process for that board.
-
 ## Enable and Configure Retrace
 
 Retrace is disabled by default. Enable it before arming, using the PX4 shell:
@@ -48,7 +40,7 @@ param set RTL_RTR_DIST 2.0
 param set RTL_RTR_RATE 2.0
 ```
 
-Recording requires an armed rotary-wing vehicle, valid local position, and at least two route points. With the defaults, fly at least 5 m and allow at least one second for another point to be recorded.
+Recording requires an armed vehicle, valid local position, and at least two route points. With the defaults, fly at least 5 m and allow at least one second for another point to be recorded.
 
 ## Use
 
@@ -62,3 +54,5 @@ Recording requires an armed rotary-wing vehicle, valid local position, and at le
    ```
 
 If a usable route is available, PX4 follows its recorded points in reverse. When retrace completes, or cannot start or continue, Navigator switches to the configured regular RTL behavior.
+
+When all is said and done the drone should return to launch and ideally not crash.
